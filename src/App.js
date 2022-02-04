@@ -1,8 +1,8 @@
 // import s from "./App.css";
 import React, { Component } from "react";
 import Statistics from "./Components/Statistics/Statistics";
-import Feedback from "./Components/Feedback/Feedback";
-
+import FeedbackOptions from "./Components/Feedback/FeedbackOptions";
+import Section from "./Components/Section/Section";
 class App extends Component {
   state = {
     good: 0,
@@ -11,7 +11,7 @@ class App extends Component {
   };
 
   handelClick = (event) => {
-    const target = event.target.id;
+    const target = event.target.name;
     this.setState((prevState) => ({ [target]: prevState[target] + 1 }));
   };
 
@@ -31,18 +31,24 @@ class App extends Component {
     const { countTotalFeedback, countPositiveFeedbackPercentage } = this;
     const total = countTotalFeedback();
     const percentage = countPositiveFeedbackPercentage();
+    const keys = Object.keys(this.state);
 
     return (
       <>
-        <h2>Please leave feedback</h2>
-        <Feedback click={this.handelClick} />
-        <Statistics
-          good={this.state.good}
-          neutral={this.state.neutral}
-          bad={this.state.bad}
-          total={total}
-          percentage={percentage}
-        />
+        <Section title={"Please leave feedback"}>
+          <FeedbackOptions options={keys} onLeaveFeedback={this.handelClick} />
+          {total ? (
+            <Statistics
+              good={this.state.good}
+              neutral={this.state.neutral}
+              bad={this.state.bad}
+              total={total}
+              positivePercentage={percentage}
+            />
+          ) : (
+            <Section title={"No feedback given"}></Section>
+          )}
+        </Section>
       </>
     );
   }
